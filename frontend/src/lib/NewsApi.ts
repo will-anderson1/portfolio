@@ -19,7 +19,7 @@ export class ApiClient {
     private baseUrl: string
   
     constructor() {
-      this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:10000'
     }
   
     private async request<T>(path: string, options?: RequestInit): Promise<T> {
