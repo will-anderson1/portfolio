@@ -26,7 +26,7 @@ export default function Home() {
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://www.linkedin.com/in/your-linkedin-profile"
+          href="https://www.linkedin.com/in/will-anderson0/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -35,7 +35,7 @@ export default function Home() {
         </a>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://github.com/your-github-username"
+          href="https://github.com/will-anderson1"
           target="_blank"
           rel="noopener noreferrer"
         >
