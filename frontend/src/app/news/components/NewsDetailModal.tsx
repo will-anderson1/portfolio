@@ -15,7 +15,6 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Avatar,
   Link,
   IconButton,
 } from '@mui/material';
@@ -26,7 +25,6 @@ import {
   Update,
   Share,
   OpenInNew,
-  Person,
   Edit,
 } from '@mui/icons-material';
 import { AggregateArticle } from '@/lib/NewsApi';

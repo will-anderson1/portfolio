@@ -7,23 +7,24 @@ from dotenv import load_dotenv
 from sqlalchemy import text
 
 # Load .env.local from parent directory
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.local'))
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.prod'))
 
 def create_database():
     """Create the database if it doesn't exist"""
     try:
         # Connect to PostgreSQL server
         conn = psycopg2.connect(
-            host="localhost",
+            host=os.getenv("DB_URL", "localhost"),
             user=os.getenv("DB_USER", "postgres"),
             password=os.getenv("DB_PASSWORD", ""),
             port=os.getenv("DB_PORT", "5432")
         )
+        print(conn)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
         
         # Create database
-        db_name = "portfolio_news"
+        db_name = "news_pim0"
         cursor.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{db_name}'")
         exists = cursor.fetchone()
         

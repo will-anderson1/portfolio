@@ -53,7 +53,7 @@ export class ApiClient {
       }
     }
 
-    async triggerAggregation(): Promise<any> {
+    async triggerAggregation(): Promise<unknown> {
       try {
         const response = await fetch(`${this.baseUrl}/api/aggregate`, {
           method: 'POST',
@@ -67,19 +67,6 @@ export class ApiClient {
         return await response.json();
       } catch (error) {
         console.error('Error triggering aggregation:', error);
-        throw error;
-      }
-    }
-
-    async getEventUpdates(eventId: string): Promise<any> {
-      try {
-        const response = await fetch(`${this.baseUrl}/api/event/${eventId}/updates`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-      } catch (error) {
-        console.error('Error fetching event updates:', error);
         throw error;
       }
     }

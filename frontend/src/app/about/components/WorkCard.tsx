@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography, Avatar, Box } from '@mui/material';
 import React from 'react';
+import Image from 'next/image';
 
 interface WorkCardProps {
   onClick: () => void;
@@ -28,39 +29,22 @@ const WorkCard: React.FC<WorkCardProps> = ({ onClick, logo, position, company })
   >
     <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       {logo && (
-        logo.endsWith('.svg') ? (
-          <img
-            src={logo}
-            alt={company}
-            style={{
-              height: 40,
-              width: 'auto',
-              marginLeft: 16,
-              borderRadius: 6,
-              objectFit: 'contain',
-              padding: 2,
-              maxWidth: 80,
-              background: 'transparent',
-              display: 'block',
-            }}
-          />
-        ) : (
-          <img
-            src={logo}
-            alt={company}
-            style={{
-              height: 40,
-              width: 'auto',
-              marginLeft: 16,
-              borderRadius: 6,
-              objectFit: 'contain',
-              padding: 2,
-              maxWidth: 80,
-              background: 'transparent',
-              display: 'block',
-            }}
-          />
-        )
+        <Image
+          src={logo}
+          alt={company}
+          width={40}
+          height={40}
+          style={{
+            marginLeft: 16,
+            borderRadius: 6,
+            objectFit: 'contain',
+            padding: 2,
+            maxWidth: 80,
+            background: 'transparent',
+            display: 'block',
+          }}
+          unoptimized
+        />
       )}
       <Box>
         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 0.5 }}>

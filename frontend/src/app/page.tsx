@@ -1,4 +1,3 @@
-import Image from "next/image";
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { Avatar } from '@mui/material';

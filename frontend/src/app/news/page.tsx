@@ -33,7 +33,7 @@ const NewsPage = () => {
     };
 
     fetchArticles();
-  }, []);
+  }, [apiClient]);
 
   const handleInfoClick = (item: NewsItem) => {
     // Find the original article

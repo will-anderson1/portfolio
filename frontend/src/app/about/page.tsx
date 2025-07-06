@@ -82,10 +82,10 @@ const workData = [
 
 export default function About() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalData, setModalData] = useState<any>(null);
+  const [modalData, setModalData] = useState<Record<string, unknown> | null>(null);
   const [modalType, setModalType] = useState<'education' | 'work' | null>(null);
 
-  const handleCardClick = (data: any, type: 'education' | 'work') => {
+  const handleCardClick = (data: Record<string, unknown>, type: 'education' | 'work') => {
     setModalData(data);
     setModalType(type);
     setModalOpen(true);

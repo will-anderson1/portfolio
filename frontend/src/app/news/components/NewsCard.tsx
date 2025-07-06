@@ -7,7 +7,6 @@ import {
   Typography,
   Box,
   Chip,
-  Avatar,
   CardActions,
   Button,
   IconButton,

@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography, Avatar, Box } from '@mui/material';
 import React from 'react';
+import Image from 'next/image';
 
 interface EducationCardProps {
   onClick: () => void;
@@ -29,10 +30,13 @@ const EducationCard: React.FC<EducationCardProps> = ({ onClick, logo, degree, sc
     <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       {logo && (
         logo.endsWith('.svg') ? (
-          <img
+          <Image
             src={logo}
             alt={school}
-            style={{ width: 48, height: 48, marginRight: 16, display: 'block', background: 'transparent', objectFit: 'contain', borderRadius: 6, maxWidth: 80 }}
+            width={48}
+            height={48}
+            style={{ marginRight: 16, display: 'block', background: 'transparent', objectFit: 'contain', borderRadius: 6, maxWidth: 80 }}
+            unoptimized
           />
         ) : (
           <Avatar src={logo} alt={school} sx={{ width: 48, height: 48, mr: 2 }} />
