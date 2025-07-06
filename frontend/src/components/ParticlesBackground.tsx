@@ -6,8 +6,8 @@ import { useParticles } from '@/contexts/ParticleContext';
 
 declare global {
   interface Window {
-    particlesJS: unknown;
-    pJSDom: unknown[];
+    particlesJS: any;
+    pJSDom: any[];
   }
 }
 
