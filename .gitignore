@@ -1,0 +1,7 @@
+*.env.*
+*.DS_store
+*.pid
+*.next
+*node_modules
+*.log
+*venv
