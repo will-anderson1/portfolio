@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 # Load .env.local from parent directory
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.local'))
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.prod'))
 
 # Database URL - you can set this in your .env.local file
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost/portfolio_news")
