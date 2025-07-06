@@ -10,7 +10,7 @@ import {
 import NewsCard, { NewsItem } from './components/NewsCard';
 import NewsDetailModal from './components/NewsDetailModal';
 import { ApiClient, AggregateArticle } from '@/lib/NewsApi';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const apiClient = new ApiClient();
 
@@ -18,7 +18,7 @@ const fetchArticles = async () => {
   return await apiClient.getNews();
 };
 
-const NewsPage = () => {
+const NewsPageContent = () => {
   const [selectedArticle, setSelectedArticle] = useState<AggregateArticle | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -110,6 +110,15 @@ const NewsPage = () => {
         article={selectedArticle}
       />
     </Container>
+  );
+};
+
+const NewsPage = () => {
+  const [queryClient] = useState(() => new QueryClient());
+  return (
+    <QueryClientProvider client={queryClient}>
+      <NewsPageContent />
+    </QueryClientProvider>
   );
 };
 
