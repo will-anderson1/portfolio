@@ -16,6 +16,7 @@ import {
   AccessTime,
   Share,
   Info,
+  Edit,
 } from '@mui/icons-material';
 
 export interface NewsItem {
@@ -116,20 +117,6 @@ const NewsCard: React.FC<NewsCardProps> = ({ item, onInfoClick, onCardClick }) =
           sx={{ 
             fontWeight: 'bold',
             lineHeight: 1.3,
-            mb: 1,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          {item.title}
-        </Typography>
-        
-        <Typography 
-          variant="body2" 
-          color="inherit"
-          sx={{ 
             mb: 2,
             flexGrow: 1,
             display: '-webkit-box',
@@ -138,13 +125,11 @@ const NewsCard: React.FC<NewsCardProps> = ({ item, onInfoClick, onCardClick }) =
             overflow: 'hidden',
           }}
         >
-          {item.excerpt}
+          {item.title}
         </Typography>
         
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <Avatar sx={{ width: 24, height: 24, mr: 1, fontSize: '0.75rem' }}>
-            {item.author.split(' ').map(n => n[0]).join('')}
-          </Avatar>
+          <Edit sx={{ fontSize: 16, mr: 1, color: 'rgba(255, 255, 255, 0.7)' }} />
           <Typography variant="caption">
             {item.author}
           </Typography>

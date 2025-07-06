@@ -27,6 +27,7 @@ import {
   Share,
   OpenInNew,
   Person,
+  Edit,
 } from '@mui/icons-material';
 import { AggregateArticle } from '@/lib/NewsApi';
 
@@ -145,9 +146,7 @@ const NewsDetailModal: React.FC<NewsDetailModalProps> = ({ open, onClose, articl
               {article.sources.map((source, index) => (
                 <ListItem key={index} sx={{ px: 0 }}>
                   <ListItemIcon sx={{ minWidth: 40 }}>
-                    <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem' }}>
-                      {source.name.split(' ').map(n => n[0]).join('')}
-                    </Avatar>
+                    <Edit sx={{ fontSize: 20, color: 'rgba(255, 255, 255, 0.7)' }} />
                   </ListItemIcon>
                   <ListItemText
                     primary={

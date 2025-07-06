@@ -14,10 +14,11 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import Switch from '@mui/material/Switch';
+import ToggleButton from '@mui/material/ToggleButton';
+import BlurOnIcon from '@mui/icons-material/BlurOn';
 
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { useParticles } from '@/contexts/ParticleContext';
+import { AutoAwesome, Portrait } from '@mui/icons-material';
 
 const pages = [
   { name: 'Home', path: '/' },
@@ -68,11 +69,11 @@ function NavBar() {
       margin: '16px',
       borderRadius: '12px',
       width: 'calc(100% - 32px)',
-      backgroundColor: 'rgb(8, 0, 255)' // Black background
+      backgroundColor: 'rgb(99, 99, 114)' // Black background
     }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <Portrait sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -88,7 +89,7 @@ function NavBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            PORTFOLIO
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -125,7 +126,7 @@ function NavBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Portrait sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -142,7 +143,7 @@ function NavBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            PORTFOLIO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -155,55 +156,25 @@ function NavBar() {
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={particlesEnabled}
-                  onChange={toggleParticles}
-                  sx={{
-                    '& .MuiSwitch-switchBase.Mui-checked': {
-                      color: 'white',
-                    },
-                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                      backgroundColor: 'white',
-                    },
-                  }}
-                />
-              }
-              label={
-                <Typography sx={{ color: 'white', fontSize: '0.875rem' }}>
-                  Particles
-                </Typography>
-              }
-            />
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 0 }}>
+            <ToggleButton
+              value="particles"
+              selected={particlesEnabled}
+              onChange={toggleParticles}
+              sx={{
+                color: particlesEnabled ? 'white' : 'rgba(255,255,255,0.5)',
+                borderColor: 'rgba(255,255,255,0.2)',
+                bgcolor: particlesEnabled ? 'rgba(255,255,255,0.08)' : 'transparent',
+                '&:hover': {
+                  bgcolor: particlesEnabled ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
+                },
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 2,
               }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+              <AutoAwesome sx={{ fontSize: 22 }} />
+            </ToggleButton>
           </Box>
         </Toolbar>
       </Container>

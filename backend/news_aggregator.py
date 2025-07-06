@@ -53,6 +53,9 @@ class NewsAggregator:
             "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"
         ]
         
+        # New event significance score bonus
+        self.new_event_bonus = float(os.getenv("NEW_EVENT_BONUS", 25))
+        
         # Scheduler control
         self.scheduler_running = False
         self.scheduler_thread = None
@@ -95,33 +98,30 @@ class NewsAggregator:
         """Fetch articles from NewsAPI"""
         try:
             # Get top headlines from multiple categories
-            categories = ['general', 'technology', 'business', 'science']
             articles = []
             
-            for category in categories:
-                try:
-                    response = self.newsapi_client.get_top_headlines(
-                        category=category,
-                        language='en',
-                        country='us',
-                        page_size=10
-                    )
+            try:
+                response = self.newsapi_client.get_top_headlines(
+                    language='en',
+                    country='us',
+                    page_size=30
+                )
+                
+                for article in response.get('articles', []):
+                    article_data = {
+                        'title': article.get('title', ''),
+                        'description': article.get('description', ''),
+                        'url': article.get('url', ''),
+                        'published_at': article.get('publishedAt'),
+                        'source': article.get('source', {}).get('name', 'Unknown'),
+                        'source_type': 'newsapi',
+                        'category': article.get('category')
+                    }
+                    articles.append(article_data)
                     
-                    for article in response.get('articles', []):
-                        article_data = {
-                            'title': article.get('title', ''),
-                            'description': article.get('description', ''),
-                            'url': article.get('url', ''),
-                            'published_at': article.get('publishedAt'),
-                            'source': article.get('source', {}).get('name', 'Unknown'),
-                            'source_type': 'newsapi',
-                            'category': category
-                        }
-                        articles.append(article_data)
-                        
-                except Exception as e:
-                    logger.error(f"Error fetching NewsAPI category {category}: {e}")
-                    
+            except Exception as e:
+                logger.error(f"Error fetching NewsAPI: {e}")
+            logger.info(f"Fetched {str(len(articles))} from NewsAPI")  
             return articles
             
         except Exception as e:
@@ -202,7 +202,7 @@ class NewsAggregator:
             
             Your task:
             1. For each new article, determine if it relates to an existing event or represents a new event
-            2. If it relates to an existing event, use the existing event_id and update the information ONLY if there are meaningful new developments
+            2. If it relates to an existing event, compare the information and determine if there are meaningful new developments
             3. If it's a new event, generate a new event_id (use the title and description to create a unique identifier)
             4. Compile comprehensive summaries for each event
             5. Assign significance scores (0-100) based on:
@@ -212,10 +212,18 @@ class NewsAggregator:
                - Political importance
                - Scientific/technological breakthrough
                - Urgency/timeliness
-            6. For updates to existing events, ONLY mark as update if there are significant new developments, not just minor rephrasing
-            7. For updates, generate a brief update description (max 100 chars) that captures the key new information or development (e.g., "Trump blames Biden for incident", "New evidence emerges", "Death toll rises to 50")
             
-            IMPORTANT: Only mark events as updates if there are substantial new developments, facts, or significant changes in the story. Do not update for minor rephrasing or duplicate information.
+            CRITICAL: For updates to existing events, ONLY mark as update if there are substantial new developments such as:
+            - New facts or numbers (e.g., "Death toll rises to 50", "100 people affected")
+            - New statements or accusations (e.g., "Trump blames Biden", "Company admits fault")
+            - Breaking developments (e.g., "New evidence emerges", "CEO resigns")
+            - Major changes in the story (e.g., "Investigation reveals", "Court rules against")
+            
+            DO NOT update for:
+            - Minor rephrasing with same meaning
+            - Small score adjustments without new info
+            - Duplicate information from different sources
+            - Minor editorial changes
             
             Return a JSON array with objects containing:
             - event_id: existing event_id if updating, or new unique identifier if new event
@@ -227,6 +235,7 @@ class NewsAggregator:
             - urls: list of article URLs
             - is_update: true if updating existing event with meaningful new info, false if new event
             - update_description: brief description of what changed (only for meaningful updates, max 100 chars)
+            - changes_significant: true/false - whether the changes warrant a new update record
             """
             
             # Call appropriate LLM based on provider
@@ -263,28 +272,24 @@ class NewsAggregator:
         for event in new_events:
             event_id = event.get('event_id')
             is_update = event.get('is_update', False)
+            changes_significant = event.get('changes_significant', True)  # Default to True for backward compatibility
             
             if not event_id or not is_update:
                 continue
                 
             existing_article = db.query(Article).filter(Article.event_id == event_id).first()
             if existing_article:
-                # Check if there are actual changes
-                title_changed = event.get('title') != existing_article.title
-                description_changed = event.get('description') != existing_article.description
-                score_changed = abs(event.get('significance_score', 0) - existing_article.significance_score) > 1.0
-                
-                # Only proceed if there are meaningful changes
-                if not (title_changed or description_changed or score_changed):
-                    logger.info(f"No meaningful changes for event: {event_id}, skipping update")
+                # Check if the LLM determined changes are significant
+                if not changes_significant:
+                    logger.info(f"LLM determined no significant changes for event: {event_id}")
                     continue
                 
-                # Get the update description from LLM or generate a default one
+                # Get the update description from LLM
                 update_description = event.get('update_description', 'Updated with new information')
                 
                 # Update with new information
-                existing_article.title = event.get('title', existing_article.title)
-                existing_article.description = event.get('description', existing_article.description)
+                existing_article.title = event.get('title') or existing_article.title
+                existing_article.description = event.get('description') or existing_article.description
                 existing_article.significance_score = event.get('significance_score', existing_article.significance_score)
                 existing_article.updated_at = datetime.utcnow()
                 existing_article.last_ranked_at = datetime.utcnow()
@@ -332,13 +337,17 @@ class NewsAggregator:
             if existing:
                 continue
             
+            # Apply significance score bonus for new events
+            base_score = event.get('significance_score', 0.0)
+            significance_score = base_score + self.new_event_bonus
+            
             # Create new article
             article = Article(
                 title=event.get('title', ''),
                 description=event.get('description', ''),
                 url=event.get('urls', [''])[0] if event.get('urls') else '',
                 event_id=event_id,
-                significance_score=event.get('significance_score', 0.0),
+                significance_score=significance_score,
                 is_active=True,
                 last_ranked_at=datetime.utcnow()
             )
