@@ -72,27 +72,66 @@ function NavBar() {
       backgroundColor: 'rgb(99, 99, 114)' // Black background
     }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Portrait sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            PORTFOLIO
-          </Typography>
+        <Toolbar disableGutters sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+          {/* Left: Logo and Particles Toggle */}
+          <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+            <Portrait sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="/"
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              PORTFOLIO
+            </Typography>
+            <ToggleButton
+              value="particles"
+              selected={particlesEnabled}
+              onChange={toggleParticles}
+              sx={{
+                color: particlesEnabled ? 'white' : 'rgba(255,255,255,0.5)',
+                borderColor: 'rgba(255,255,255,0.2)',
+                bgcolor: particlesEnabled ? 'rgba(255,255,255,0.08)' : 'transparent',
+                '&:hover': {
+                  bgcolor: particlesEnabled ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
+                },
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 2,
+                ml: 1,
+              }}
+            >
+              <AutoAwesome sx={{ fontSize: 22 }} />
+            </ToggleButton>
+          </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          {/* Center: (empty, can be used for spacing) */}
+          <Box sx={{ flexGrow: 1 }} />
+
+          {/* Right: Navigation options */}
+          <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, alignItems: 'center', justifyContent: 'flex-end' }}>
+            {pages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={() => handleNavigation(page.path)}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page.name}
+              </Button>
+            ))}
+          </Box>
+
+          {/* Mobile: Hamburger and mobile nav (unchanged) */}
+          <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -125,56 +164,6 @@ function NavBar() {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
-          <Portrait sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            PORTFOLIO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page.name}
-                onClick={() => handleNavigation(page.path)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.name}
-              </Button>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 0 }}>
-            <ToggleButton
-              value="particles"
-              selected={particlesEnabled}
-              onChange={toggleParticles}
-              sx={{
-                color: particlesEnabled ? 'white' : 'rgba(255,255,255,0.5)',
-                borderColor: 'rgba(255,255,255,0.2)',
-                bgcolor: particlesEnabled ? 'rgba(255,255,255,0.08)' : 'transparent',
-                '&:hover': {
-                  bgcolor: particlesEnabled ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
-                },
-                px: 1.5,
-                py: 0.5,
-                borderRadius: 2,
-              }}
-            >
-              <AutoAwesome sx={{ fontSize: 22 }} />
-            </ToggleButton>
           </Box>
         </Toolbar>
       </Container>
