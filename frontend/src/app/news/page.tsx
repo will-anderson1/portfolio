@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Box,
@@ -10,33 +10,26 @@ import {
 import NewsCard, { NewsItem } from './components/NewsCard';
 import NewsDetailModal from './components/NewsDetailModal';
 import { ApiClient, AggregateArticle } from '@/lib/NewsApi';
+import { useQuery } from '@tanstack/react-query';
+
+const apiClient = new ApiClient();
+
+const fetchArticles = async () => {
+  return await apiClient.getNews();
+};
 
 const NewsPage = () => {
-  const [articles, setArticles] = useState<AggregateArticle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<AggregateArticle | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const apiClient = new ApiClient();
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        setLoading(true);
-        const data = await apiClient.getNews();
-        setArticles(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch articles');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArticles();
-  }, [apiClient]);
+  const { data: articles = [], isLoading, error } = useQuery({
+    queryKey: ['news-articles'],
+    queryFn: fetchArticles,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+  });
 
   const handleInfoClick = (item: NewsItem) => {
-    // Find the original article
     const originalArticle = articles.find(article => article.title === item.title);
     if (originalArticle) {
       setSelectedArticle(originalArticle);
@@ -45,7 +38,6 @@ const NewsPage = () => {
   };
 
   const handleCardClick = (item: NewsItem) => {
-    // Find the original article
     const originalArticle = articles.find(article => article.title === item.title);
     if (originalArticle) {
       setSelectedArticle(originalArticle);
@@ -70,7 +62,7 @@ const NewsPage = () => {
     };
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Container maxWidth="xl" sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
         <CircularProgress />
@@ -82,7 +74,7 @@ const NewsPage = () => {
     return (
       <Container maxWidth="xl" sx={{ py: 4 }}>
         <Typography variant="h6" color="error" align="center">
-          Error: {error}
+          Error: {(error as Error).message}
         </Typography>
       </Container>
     );
