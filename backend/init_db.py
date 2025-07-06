@@ -241,13 +241,8 @@ if __name__ == "__main__":
         truncate_all_tables()
         print("Done.")
         sys.exit(0)
-    print("Creating database...")
-    create_database()
-    
+    # print("Creating database...")
+    # create_database()
     print("Creating tables...")
     create_tables()
-    
-    print("Populating test data...")
-    # populate_test_data()
-    
     print("Database setup complete!") 

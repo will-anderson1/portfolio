@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env.prod'))
 
 # Database URL - you can set this in your .env.local file
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost/portfolio_news")
+DATABASE_URL = os.getenv("DB_URL", "postgresql://localhost/portfolio_news")
 print(DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
